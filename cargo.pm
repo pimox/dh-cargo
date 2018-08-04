@@ -58,6 +58,7 @@ sub pre_building_step {
 
     $this->{cargo_home} = Cwd::abs_path($this->get_sourcepath("debian/cargo_home"));
     $this->{cargo_registry} = Cwd::abs_path($this->get_sourcepath("debian/cargo_registry"));
+    $this->{host_rust_type} = deb_host_rust_type;
 
     my $control = Dpkg::Control::Info->new();
 
@@ -165,7 +166,7 @@ sub test {
     # requires non-rust system dependencies and the maintainer didn't provide
     # this additional information to debcargo.
     doit("cargo", "build", "--verbose", "--verbose", @{$this->{j}},
-        "--target", deb_host_rust_type,
+        "--target", $this->{host_rust_type},
         "-Zavoid-dev-deps");
 }
 
@@ -194,11 +195,16 @@ sub install {
         # normally `cargo install` deletes them when it exits
         $ENV{'CARGO_TARGET_DIR'} = Cwd::abs_path($this->get_sourcepath("target"));
         doit("cargo", "install", "--verbose", "--verbose", @{$this->{j}},
-            "--target", deb_host_rust_type,
+            "--target", $this->{host_rust_type},
             $this->{crate},
             "--vers", cargo_version($this->get_sourcepath("Cargo.toml")),
             "--root", $target);
         doit("rm", "$target/.crates.toml");
+        # if there was a custom build output, symlink it to debian/cargo_out_dir
+        # hopefully cargo will provide a better solution in future https://github.com/rust-lang/cargo/issues/5457
+        my $out_dir = `ls -td "target/$this->{host_rust_type}/release/build/$this->{crate}"-*/out | head -n1`;
+        $out_dir =~ s/\n$//;
+        doit("ln", "-sf", "../$out_dir", "debian/cargo_out_dir") if $out_dir ne "";
     }
 }
 
