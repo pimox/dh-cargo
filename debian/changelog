@@ -1,3 +1,10 @@
+dh-cargo (7) UNRELEASED; urgency=medium
+
+  * Be more verbose, as recommended by Policy.
+  * Update to latest Standards-Version.
+
+ -- Ximin Luo <infinity0@debian.org>  Sat, 04 Aug 2018 11:33:36 -0700
+
 dh-cargo (6) unstable; urgency=medium
 
   * Don't add .pc directories to binary package, but do add debian/patches.

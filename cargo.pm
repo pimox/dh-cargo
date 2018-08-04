@@ -164,7 +164,7 @@ sub test {
     # Check that the thing compiles. This might fail if e.g. the package
     # requires non-rust system dependencies and the maintainer didn't provide
     # this additional information to debcargo.
-    doit("cargo", "build", "--verbose", @{$this->{j}},
+    doit("cargo", "build", "--verbose", "--verbose", @{$this->{j}},
         "--target", deb_host_rust_type,
         "-Zavoid-dev-deps");
 }
@@ -190,7 +190,7 @@ sub install {
     }
     if ($this->{binpkg}) {
         my $target = $this->get_sourcepath("debian/" . $this->{binpkg} . "/usr");
-        doit("cargo", "install", "--verbose", @{$this->{j}},
+        doit("cargo", "install", "--verbose", "--verbose", @{$this->{j}},
             "--target", deb_host_rust_type,
             $this->{crate},
             "--vers", cargo_version($this->get_sourcepath("Cargo.toml")),
