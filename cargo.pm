@@ -190,6 +190,9 @@ sub install {
     }
     if ($this->{binpkg}) {
         my $target = $this->get_sourcepath("debian/" . $this->{binpkg} . "/usr");
+        # set CARGO_TARGET_DIR so build products are saved in target/
+        # normally `cargo install` deletes them when it exits
+        $ENV{'CARGO_TARGET_DIR'} = Cwd::abs_path($this->get_sourcepath("target"));
         doit("cargo", "install", "--verbose", "--verbose", @{$this->{j}},
             "--target", deb_host_rust_type,
             $this->{crate},

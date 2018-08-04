@@ -2,6 +2,7 @@ dh-cargo (7) UNRELEASED; urgency=medium
 
   * Be more verbose, as recommended by Policy.
   * Update to latest Standards-Version.
+  * Set CARGO_TARGET_DIR so build products are saved.
 
  -- Ximin Luo <infinity0@debian.org>  Sat, 04 Aug 2018 11:33:36 -0700
 
