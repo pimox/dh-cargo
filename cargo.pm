@@ -168,6 +168,8 @@ sub test {
     doit("cargo", "build", "--verbose", "--verbose", @{$this->{j}},
         "--target", $this->{host_rust_type},
         "-Zavoid-dev-deps");
+    # test generating Built-Using fields
+    doit("env", "CARGO_CHANNEL=debug", "/usr/share/cargo/dh-cargo-built-using");
 }
 
 sub install {
@@ -204,7 +206,9 @@ sub install {
         # hopefully cargo will provide a better solution in future https://github.com/rust-lang/cargo/issues/5457
         my $out_dir = `ls -td "target/$this->{host_rust_type}/release/build/$this->{crate}"-*/out | head -n1`;
         $out_dir =~ s/\n$//;
-        doit("ln", "-sf", "../$out_dir", "debian/cargo_out_dir") if $out_dir ne "";
+        doit("ln", "-sfT", "../$out_dir", "debian/cargo_out_dir") if $out_dir ne "";
+        # generate Built-Using fields
+        doit("/usr/share/cargo/dh-cargo-built-using", $this->{binpkg});
     }
 }
 
