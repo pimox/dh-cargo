@@ -1,8 +1,8 @@
-dh-cargo (8) UNRELEASED; urgency=medium
+dh-cargo (8) unstable; urgency=medium
 
   * Generate ${cargo:Built-Using} and ${cargo:X-Cargo-Built-Using} substvars.
 
- -- Ximin Luo <infinity0@debian.org>  Sat, 11 Aug 2018 22:37:25 -0700
+ -- Ximin Luo <infinity0@debian.org>  Tue, 14 Aug 2018 02:17:08 -0700
 
 dh-cargo (7) unstable; urgency=medium
 
