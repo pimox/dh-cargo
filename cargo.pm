@@ -1,6 +1,7 @@
 # debhelper buildsystem for Rust crates using Cargo
 #
 # Josh Triplett <josh@joshtriplett.org>
+# Ximin Luo <infinity0@debian.org>
 
 package Debian::Debhelper::Buildsystem::cargo;
 

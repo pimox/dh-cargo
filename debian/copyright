@@ -4,7 +4,9 @@ Upstream-Contact: Josh Triplett <josh@joshtriplett.org>
 Source: https://anonscm.debian.org/git/pkg-rust/dh-cargo.git
 
 Files: *
-Copyright: 2016 Josh Triplett <josh@joshtriplett.org>
+Copyright:
+ 2018 Ximin Luo <infinity0@debian.org>
+ 2016 Josh Triplett <josh@joshtriplett.org>
 License: MIT
 
 License: MIT
