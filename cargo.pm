@@ -140,10 +140,13 @@ sub configure {
     @ldflags = map { "\"-C\", \"link-arg=$_\"" } @ldflags;
     # We manually supply the linker to support cross-compilation
     # This is because of https://github.com/rust-lang/cargo/issues/4133
+    my $crate = $this->{crate} . '-' . $this->{version};
+    my $curdir = Cwd::abs_path($this->get_sourcedir());
     my $rustflags_toml = join(", ",
         '"-C"', '"linker=' . dpkg_architecture_value("DEB_HOST_GNU_TYPE") . '-gcc"',
         '"-C"', '"debuginfo=2"',
         '"--cap-lints"', '"warn"',
+        '"--remap-path-prefix"', "\"$curdir=/usr/share/cargo/registry/${crate}\"",
         @ldflags);
     open(CONFIG, ">" . $this->{cargo_home} . "/config");
     print(CONFIG qq{

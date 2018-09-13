@@ -1,3 +1,9 @@
+dh-cargo (9) UNRELEASED; urgency=medium
+
+  * Set remap-path-prefix for reproducible builds.
+
+ -- Ximin Luo <infinity0@debian.org>  Wed, 12 Sep 2018 21:56:07 -0700
+
 dh-cargo (8) unstable; urgency=medium
 
   * Generate ${cargo:Built-Using} and ${cargo:X-Cargo-Built-Using} substvars.
