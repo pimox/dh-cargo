@@ -187,6 +187,7 @@ sub test {
 
 sub install {
     my $this=shift;
+    my $destdir=shift;
     $ENV{'CARGO_HOME'} = $this->{cargo_home};
     my $crate = $this->{crate} . '-' . $this->{version};
     if ($this->{libpkg}) {

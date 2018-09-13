@@ -1,3 +1,9 @@
+dh-cargo (10) UNRELEASED; urgency=medium
+
+  * Fix usage of "sub install", it takes an extra destdir param.
+
+ -- Ximin Luo <infinity0@debian.org>  Wed, 12 Sep 2018 22:44:24 -0700
+
 dh-cargo (9) unstable; urgency=medium
 
   * Set remap-path-prefix for reproducible builds.
