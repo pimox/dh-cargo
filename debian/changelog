@@ -1,6 +1,7 @@
 dh-cargo (9) UNRELEASED; urgency=medium
 
   * Set remap-path-prefix for reproducible builds.
+  * Support adding extra flags to dh_auto_test / dh_auto_install.
 
  -- Ximin Luo <infinity0@debian.org>  Wed, 12 Sep 2018 21:56:07 -0700
 

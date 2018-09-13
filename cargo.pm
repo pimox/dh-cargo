@@ -140,7 +140,6 @@ sub configure {
     @ldflags = map { "\"-C\", \"link-arg=$_\"" } @ldflags;
     # We manually supply the linker to support cross-compilation
     # This is because of https://github.com/rust-lang/cargo/issues/4133
-    my $crate = $this->{crate} . '-' . $this->{version};
     my $curdir = Cwd::abs_path($this->get_sourcedir());
     my $rustflags_toml = join(", ",
         '"-C"', '"linker=' . dpkg_architecture_value("DEB_HOST_GNU_TYPE") . '-gcc"',
@@ -164,13 +163,23 @@ rustflags = [$rustflags_toml]
 
 sub test {
     my $this=shift;
+    my $cmd="build";
+    if (!defined $_[0]) {
+        # nop
+    } elsif ($_[0] eq "test") {
+        $cmd="test";
+        shift;
+    } elsif ($_[0] eq "build") {
+        shift;
+    }
     $ENV{'CARGO_HOME'} = $this->{cargo_home};
     # Check that the thing compiles. This might fail if e.g. the package
     # requires non-rust system dependencies and the maintainer didn't provide
     # this additional information to debcargo.
-    doit("cargo", "build", "--verbose", "--verbose", @{$this->{j}},
+    doit("cargo", $cmd, "--verbose", "--verbose", @{$this->{j}},
         "--target", $this->{host_rust_type},
-        "-Zavoid-dev-deps");
+        "-Zavoid-dev-deps",
+        @_);
     # test generating Built-Using fields
     doit("env", "CARGO_CHANNEL=debug", "/usr/share/cargo/dh-cargo-built-using");
 }
@@ -203,7 +212,8 @@ sub install {
             "--target", $this->{host_rust_type},
             $this->{crate},
             "--vers", cargo_version($this->get_sourcepath("Cargo.toml")),
-            "--root", $target);
+            "--root", $target,
+            @_);
         doit("rm", "$target/.crates.toml");
         # if there was a custom build output, symlink it to debian/cargo_out_dir
         # hopefully cargo will provide a better solution in future https://github.com/rust-lang/cargo/issues/5457
