@@ -58,7 +58,6 @@ sub pre_building_step {
     my $step = shift;
 
     $this->{cargo_home} = Cwd::abs_path($this->get_sourcepath("debian/cargo_home"));
-    $this->{cargo_registry} = Cwd::abs_path($this->get_sourcepath("debian/cargo_registry"));
     $this->{host_rust_type} = deb_host_rust_type;
 
     my $control = Dpkg::Control::Info->new();
@@ -103,6 +102,11 @@ sub pre_building_step {
     my $parallel = $this->get_parallel();
     $this->{j} = $parallel > 0 ? ["-j$parallel"] : [];
 
+    $ENV{'CARGO_HOME'} = $this->{cargo_home};
+    $ENV{'DEB_CARGO_CRATE'} = $crate . '_' . $this->{version};
+    $ENV{'DEB_HOST_RUST_TYPE'} = $this->{host_rust_type};
+    $ENV{'DEB_HOST_GNU_TYPE'} = dpkg_architecture_value("DEB_HOST_GNU_TYPE");
+
     $this->SUPER::pre_building_step($step);
 }
 
@@ -117,49 +121,9 @@ sub get_sources {
 
 sub configure {
     my $this=shift;
-    # Create a fake local registry $this->{cargo_registry} with only our dependencies
-    my $crate = $this->{crate} . '-' . $this->{version};
-    my $registry = $this->{cargo_registry};
-    doit("mkdir", "-p", $this->{cargo_home}, $registry);
-    opendir(my $dirhandle, '/usr/share/cargo/registry');
-    my @crates = map { "/usr/share/cargo/registry/$_" } grep { $_ ne '.' && $_ ne '..' } readdir($dirhandle);
-    closedir($dirhandle);
-    if (@crates) {
-        doit("ln", "-st", "$registry", @crates);
-    }
-    # Handle the case of building the package with the same version of the
-    # package installed.
-    if (-l "$registry/$crate") {
-        unlink("$registry/$crate");
-    }
-    mkdir("$registry/$crate");
-    my @sources = $this->get_sources();
-    doit("cp", "--parents", "-at", "$registry/$crate", @sources);
-    doit("cp", $this->get_sourcepath("debian/cargo-checksum.json"), "$registry/$crate/.cargo-checksum.json");
-
-    my @ldflags = split / /, $ENV{'LDFLAGS'};
-    @ldflags = map { "\"-C\", \"link-arg=$_\"" } @ldflags;
-    # We manually supply the linker to support cross-compilation
-    # This is because of https://github.com/rust-lang/cargo/issues/4133
-    my $curdir = Cwd::abs_path($this->get_sourcedir());
-    my $rustflags_toml = join(", ",
-        '"-C"', '"linker=' . dpkg_architecture_value("DEB_HOST_GNU_TYPE") . '-gcc"',
-        '"-C"', '"debuginfo=2"',
-        '"--cap-lints"', '"warn"',
-        '"--remap-path-prefix"', "\"$curdir=/usr/share/cargo/registry/${crate}\"",
-        @ldflags);
-    open(CONFIG, ">" . $this->{cargo_home} . "/config");
-    print(CONFIG qq{
-[source.crates-io]
-replace-with = "dh-cargo-registry"
-
-[source.dh-cargo-registry]
-directory = "$registry"
-
-[build]
-rustflags = [$rustflags_toml]
-});
-    close(CONFIG);
+    doit("cp", $this->get_sourcepath("debian/cargo-checksum.json"),
+               $this->get_sourcepath(".cargo-checksum.json"));
+    doit("/usr/share/cargo/bin/cargo", "prepare-debian", "/usr/share/cargo/registry");
 }
 
 sub test {
@@ -173,14 +137,10 @@ sub test {
     } elsif ($_[0] eq "build") {
         shift;
     }
-    $ENV{'CARGO_HOME'} = $this->{cargo_home};
     # Check that the thing compiles. This might fail if e.g. the package
     # requires non-rust system dependencies and the maintainer didn't provide
     # this additional information to debcargo.
-    doit("cargo", $cmd, "--verbose", "--verbose", @{$this->{j}},
-        "--target", $this->{host_rust_type},
-        "-Zavoid-dev-deps",
-        @_);
+    doit("/usr/share/cargo/bin/cargo", $cmd, @_);
     # test generating Built-Using fields
     doit("env", "CARGO_CHANNEL=debug", "/usr/share/cargo/dh-cargo-built-using");
 }
@@ -188,7 +148,6 @@ sub test {
 sub install {
     my $this=shift;
     my $destdir=shift;
-    $ENV{'CARGO_HOME'} = $this->{cargo_home};
     my $crate = $this->{crate} . '-' . $this->{version};
     if ($this->{libpkg}) {
         my $target = $this->get_sourcepath("debian/" . $this->{libpkg} . "/usr/share/cargo/registry/$crate");
@@ -206,22 +165,9 @@ sub install {
         doit("ln", "-s", $this->{libpkg}, "$target/$pkg");
     }
     if ($this->{binpkg}) {
-        my $target = $this->get_sourcepath("debian/" . $this->{binpkg} . "/usr");
-        # set CARGO_TARGET_DIR so build products are saved in target/
-        # normally `cargo install` deletes them when it exits
-        $ENV{'CARGO_TARGET_DIR'} = Cwd::abs_path($this->get_sourcepath("target"));
-        doit("cargo", "install", "--verbose", "--verbose", @{$this->{j}},
-            "--target", $this->{host_rust_type},
-            $this->{crate},
-            "--vers", cargo_version($this->get_sourcepath("Cargo.toml")),
-            "--root", $target,
-            @_);
-        doit("rm", "$target/.crates.toml");
-        # if there was a custom build output, symlink it to debian/cargo_out_dir
-        # hopefully cargo will provide a better solution in future https://github.com/rust-lang/cargo/issues/5457
-        my $out_dir = `ls -td "target/$this->{host_rust_type}/release/build/$this->{crate}"-*/out | head -n1`;
-        $out_dir =~ s/\n$//;
-        doit("ln", "-sfT", "../$out_dir", "debian/cargo_out_dir") if $out_dir ne "";
+        # Do the install
+        $ENV{'DEB_CARGO_PACKAGE'} = $this->{binpkg};
+        doit("/usr/share/cargo/bin/cargo", "install", @_);
         # generate Built-Using fields
         doit("/usr/share/cargo/dh-cargo-built-using", $this->{binpkg});
     }
@@ -229,9 +175,8 @@ sub install {
 
 sub clean {
     my $this=shift;
-    $ENV{'CARGO_HOME'} = $this->{cargo_home};
-    doit("cargo", "clean", "--verbose");
-    doit("rm", "-rf", $this->{cargo_home}, $this->{cargo_registry});
+    doit("/usr/share/cargo/bin/cargo", "clean", @_);
+    doit("rm", "-rf", $this->get_sourcepath(".cargo-checksum.json"));
 }
 
 1
