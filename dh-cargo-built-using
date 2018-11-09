@@ -73,10 +73,11 @@ rust_search_lib() {
 
 native_libs() {
 	ls -1d "$CARGO_TARGET_DIR/build"/*/output 2>/dev/null | while read output; do
+		sed -nre 's	^cargo:rustc-link-lib=static=(.*)	\1 '"$output"'	gp' "$output"
+	done | while read lib output; do
 		local containing_crate="$(basename "$(dirname "$output")")"
-		local lib=$(sed -nre 's	^cargo:rustc-link-lib=static=(.*)	\1	gp' "$output")
 		test -n "$lib" || continue
-		local libfile=$(sed -nre 's	^cargo:rustc-link-search=native=(.*)	\1	gp' "$output" | rust_search_lib "$lib")
+		local libfile="$(sed -nre 's	^cargo:rustc-link-search=native=(.*)	\1	gp' "$output" | rust_search_lib "$lib")"
 		local srcleft=""
 		test -n "$libfile" || { echo >&2 "$0: abort: could not find static lib '$lib'; rustc should have failed already?"; exit 1; }
 		if [ "${libfile#$CARGO_TARGET_DIR_ABS/}" != "$libfile" ]; then

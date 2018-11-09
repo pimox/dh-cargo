@@ -1,3 +1,10 @@
+dh-cargo (11) UNRELEASED; urgency=medium
+
+  * Reimplement in terms of /usr/share/cargo/bin/cargo wrapper script.
+  * dh-cargo-built-using: fix bug with crates that build >1 static lib.
+
+ -- Ximin Luo <infinity0@debian.org>  Fri, 09 Nov 2018 03:00:00 -0800
+
 dh-cargo (10) unstable; urgency=medium
 
   * Fix usage of "sub install", it takes an extra destdir param.
