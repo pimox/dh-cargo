@@ -1,3 +1,9 @@
+dh-cargo (12) UNRELEASED; urgency=medium
+
+  * Fix typo that broke installation of binary crates.
+
+ -- Ximin Luo <infinity0@debian.org>  Thu, 29 Nov 2018 21:56:17 -0800
+
 dh-cargo (11) unstable; urgency=medium
 
   * Reimplement in terms of /usr/share/cargo/bin/cargo wrapper script.

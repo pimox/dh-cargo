@@ -171,7 +171,7 @@ sub install {
     }
     if ($this->{binpkg}) {
         # Do the install
-        doit("env", "DEB_CARGO_PACKAGE", $this->{binpkg},
+        doit("env", "DEB_CARGO_PACKAGE=$this->{binpkg}",
              "/usr/share/cargo/bin/cargo", "install", @_);
         # generate Built-Using fields
         doit("/usr/share/cargo/dh-cargo-built-using", $this->{binpkg});
