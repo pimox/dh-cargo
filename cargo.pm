@@ -123,7 +123,12 @@ sub configure {
     my $this=shift;
     doit("cp", $this->get_sourcepath("debian/cargo-checksum.json"),
                $this->get_sourcepath(".cargo-checksum.json"));
-    doit("/usr/share/cargo/bin/cargo", "prepare-debian", "/usr/share/cargo/registry");
+    if (-e "/usr/share/cargo/registry") {
+        doit("ln", "-sf", "/usr/share/cargo/registry", "debian/cargo_registry");
+    } else {
+        doit("mkdir", "-p", "debian/cargo_registry"); # empty registry
+    }
+    doit("/usr/share/cargo/bin/cargo", "prepare-debian", "debian/cargo_registry");
 }
 
 sub test {
