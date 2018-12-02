@@ -1,9 +1,9 @@
-dh-cargo (13) UNRELEASED; urgency=medium
+dh-cargo (13) unstable; urgency=medium
 
   * Make debian/cargo_registry behaviour more robust.
   * Make dh-cargo-built-using behaviour more robust.
 
- -- Ximin Luo <infinity0@debian.org>  Sun, 02 Dec 2018 09:15:36 -0800
+ -- Ximin Luo <infinity0@debian.org>  Sun, 02 Dec 2018 09:29:06 -0800
 
 dh-cargo (12) unstable; urgency=medium
 
