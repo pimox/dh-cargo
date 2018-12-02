@@ -124,7 +124,7 @@ sub configure {
     doit("cp", $this->get_sourcepath("debian/cargo-checksum.json"),
                $this->get_sourcepath(".cargo-checksum.json"));
     if (-e "/usr/share/cargo/registry") {
-        doit("ln", "-sf", "/usr/share/cargo/registry", "debian/cargo_registry");
+        doit("ln", "-sfT", "/usr/share/cargo/registry", "debian/cargo_registry");
     } else {
         doit("mkdir", "-p", "debian/cargo_registry"); # empty registry
     }
@@ -182,6 +182,7 @@ sub clean {
     my $this=shift;
     doit("/usr/share/cargo/bin/cargo", "clean", @_);
     doit("rm", "-rf", $this->get_sourcepath(".cargo-checksum.json"));
+    doit("rm", "-rf", "debian/cargo_registry");
 }
 
 1

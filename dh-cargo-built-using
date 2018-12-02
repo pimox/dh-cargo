@@ -80,6 +80,7 @@ native_libs() {
 		local libfile="$(sed -nre 's	^cargo:rustc-link-search=native=(.*)	\1	gp' "$output" | rust_search_lib "$lib")"
 		local srcleft=""
 		test -n "$libfile" || { echo >&2 "$0: abort: could not find static lib '$lib'; rustc should have failed already?"; exit 1; }
+		echo >&2 "$0: found static lib $lib at $libfile"
 		if [ "${libfile#$CARGO_TARGET_DIR_ABS/}" != "$libfile" ]; then
 			# static library source code embedded in crate
 			local srcstat="$(sed -nre 's	^dh-cargo:deb-built-using='"$lib"'=([01]=.*)	\1	gp' "$output")"
@@ -87,7 +88,7 @@ native_libs() {
 			0=*|1=*)
 				srcleft="${srcstat%%=*}"
 				libfile="${srcstat#*=}"
-				if [ "$libfile" = "$PWD" ]; then
+				if [ "$(readlink -f "$libfile")" = "$(readlink -f "$PWD")" ]; then
 					echo >&2 "$0: static library derived from $libfile which is the top-level crate being built, no need to add Built-Using"
 					continue
 				fi
