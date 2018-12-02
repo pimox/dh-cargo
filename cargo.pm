@@ -147,7 +147,7 @@ sub test {
     # this additional information to debcargo.
     doit("/usr/share/cargo/bin/cargo", $cmd, @_);
     # test generating Built-Using fields
-    doit("env", "CARGO_CHANNEL=debug", "/usr/share/cargo/dh-cargo-built-using");
+    doit("env", "CARGO_CHANNEL=debug", "/usr/share/cargo/bin/dh-cargo-built-using");
 }
 
 sub install {
@@ -174,7 +174,7 @@ sub install {
         doit("env", "DEB_CARGO_PACKAGE=$this->{binpkg}",
              "/usr/share/cargo/bin/cargo", "install", @_);
         # generate Built-Using fields
-        doit("/usr/share/cargo/dh-cargo-built-using", $this->{binpkg});
+        doit("/usr/share/cargo/bin/dh-cargo-built-using", $this->{binpkg});
     }
 }
 
