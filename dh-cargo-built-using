@@ -101,7 +101,7 @@ native_libs() {
 				;;
 			esac
 		fi
-		local wpkg="$(dpkg -S "$libfile")"
+		local wpkg="$(dpkg -S "$(readlink -f "$libfile")")"
 		test -n "$wpkg" || { echo >&2 "$0: abort: could not find Debian package for file $libfile"; exit 1; }
 		local pkgstat="$(echo "$wpkg" | sed -nre 's	(.*): .*	\1	gp' | xargs -r dpkg-query --show)"
 		local pkg="$(echo "$pkgstat" | cut -f1)"

@@ -1,3 +1,9 @@
+dh-cargo (14) UNRELEASED; urgency=medium
+
+  * Use absolute path when dpkg-searching for libs.
+
+ -- Ximin Luo <infinity0@debian.org>  Tue, 18 Dec 2018 17:41:00 -0800
+
 dh-cargo (13) unstable; urgency=medium
 
   * Make debian/cargo_registry behaviour more robust.
