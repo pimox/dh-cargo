@@ -1,3 +1,9 @@
+dh-cargo (16) UNRELEASED; urgency=medium
+
+  * Make detection of rust_libs in dh-cargo-built-using work again.
+
+ -- Ximin Luo <infinity0@debian.org>  Mon, 21 Jan 2019 00:04:08 -0800
+
 dh-cargo (15) unstable; urgency=medium
 
   * Use source package names in *Built-Using.

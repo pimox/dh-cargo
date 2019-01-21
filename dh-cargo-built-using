@@ -33,7 +33,7 @@ pkg_has_srcleft_license() {
 
 rust_libs() {
 	cat "$CARGO_TARGET_DIR/deps"/*.d \
-	| sed -nre 's	^(('"$PWD/"')?'"$CARGO_REGISTRY"'/[^/]*)/.*	\1	gp' \
+	| sed -nre 's	^\S*/('"$CARGO_REGISTRY"'/[^/]*)/.*	'"$(readlink -f "$PWD")/"'\1	gp' \
 	| sort -u \
 	| xargs -r readlink -f \
 	| xargs -r dpkg -S \
@@ -140,7 +140,7 @@ output() {
 	else
 		local built_using=""
 		local built_using_x=""
-		sort -u | while read pkg ver srcleft; do
+		while read pkg ver srcleft; do
 			local src="$(dpkg-query -f '${source:Package}' --show "$pkg")"
 			case "$srcleft" in
 			2)	exit 1;;
@@ -157,4 +157,4 @@ native_libs="$(native_libs)" # capture output outside of pipe so set -e works
 {
 rust_libs
 test -z "$native_libs" || echo "$native_libs"
-} | output "$@"
+} | LC_COLLATE=C.utf-8 sort -u | output "$@"
