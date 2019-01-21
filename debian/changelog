@@ -1,3 +1,9 @@
+dh-cargo (15) UNRELEASED; urgency=medium
+
+  * Use source package names in *Built-Using.
+
+ -- Ximin Luo <infinity0@debian.org>  Sun, 20 Jan 2019 17:32:54 -0800
+
 dh-cargo (14) unstable; urgency=medium
 
   * Use absolute path when dpkg-searching for libs.

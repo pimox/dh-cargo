@@ -140,12 +140,13 @@ output() {
 	else
 		local built_using=""
 		local built_using_x=""
-		while read pkg ver srcleft; do
+		sort -u | while read pkg ver srcleft; do
+			local src="$(dpkg-query -f '${source:Package}' --show "$pkg")"
 			case "$srcleft" in
 			2)	exit 1;;
-			1)	built_using="${built_using}$pkg (= $ver), ";;
+			1)	built_using="${built_using}$src (= $ver), ";;
 			esac
-			built_using_x="${built_using_x}$pkg (= $ver), "
+			built_using_x="${built_using_x}$src (= $ver), "
 		done
 		echo "cargo:Built-Using=${built_using%, }" >> "debian/$binpkg.substvars"
 		echo "cargo:X-Cargo-Built-Using=${built_using_x%, }" >> "debian/$binpkg.substvars"
