@@ -1,8 +1,8 @@
-dh-cargo (15) UNRELEASED; urgency=medium
+dh-cargo (15) unstable; urgency=medium
 
   * Use source package names in *Built-Using.
 
- -- Ximin Luo <infinity0@debian.org>  Sun, 20 Jan 2019 17:32:54 -0800
+ -- Ximin Luo <infinity0@debian.org>  Sun, 20 Jan 2019 17:40:12 -0800
 
 dh-cargo (14) unstable; urgency=medium
 
