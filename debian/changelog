@@ -1,8 +1,8 @@
-dh-cargo (17) UNRELEASED; urgency=medium
+dh-cargo (17) unstable; urgency=medium
 
   * Use --link-from-system from the newer debian-cargo-wrapper.
 
- -- Ximin Luo <infinity0@debian.org>  Wed, 23 Jan 2019 20:27:31 -0800
+ -- Ximin Luo <infinity0@debian.org>  Thu, 24 Jan 2019 01:28:43 -0800
 
 dh-cargo (16) unstable; urgency=medium
 
