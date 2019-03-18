@@ -1,3 +1,9 @@
+dh-cargo (18) UNRELEASED; urgency=medium
+
+  * Add cargo-auto-test to prepare for running autopkgtests.
+
+ -- Ximin Luo <infinity0@debian.org>  Sun, 17 Mar 2019 17:39:56 -0700
+
 dh-cargo (17) unstable; urgency=medium
 
   * Use --link-from-system from the newer debian-cargo-wrapper.

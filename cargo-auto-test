@@ -1,0 +1,49 @@
+#!/bin/bash
+# Run `cargo test` on an installed Debian crate, e.g. in an autopkgtest.
+#
+# Requires dev-dependencies to be installed. If you give extra flags such as
+# "--all-features", then these features' dependencies must also be installed.
+
+set -e
+
+pkg="$1"
+ver="$2"
+
+if [ -z "$pkg" -o -z "$ver" ]; then
+	echo >&2 "Usage: $0 <crate> <version> [<extra test flags, e.g. --all-features>]"
+	exit 2
+fi
+shift 2
+
+pkgdir="/usr/share/cargo/registry/${pkg}-${ver}"
+if [ ! -d "$pkgdir" ]; then
+	echo >&2 "crate directory not found: $pkgdir"
+	exit 1
+fi
+cd "$pkgdir"
+
+rundir=$(mktemp -d)
+# https://stackoverflow.com/a/14812383 inside "trap" avoids running handler twice
+trap 'excode=$?; rm -rf "'"$rundir"'"; trap - EXIT' EXIT HUP INT QUIT PIPE TERM
+
+# set envvars necessary for cargo-debian-wrapper
+
+export DEB_CARGO_CRATE="${pkg}_${ver}"
+export CARGO_HOME="$rundir/debian/cargo_home"
+mkdir -p "$CARGO_HOME"
+mkdir -p "$rundir/registry"
+
+. <(dpkg-buildflags --export)
+. <(dpkg-architecture -s)
+RUST_TYPE="$(rustc --version --verbose | sed -ne 's/^host: //p')"
+export DEB_HOST_RUST_TYPE="$RUST_TYPE"
+export DEB_BUILD_RUST_TYPE="$RUST_TYPE"
+export DEB_TARGET_RUST_TYPE="$RUST_TYPE"
+
+export CARGO_TARGET_DIR="$rundir/target"
+export PATH="/usr/share/cargo/bin:$PATH"
+
+# run the test!
+
+cargo prepare-debian "$rundir/registry" --link-from-system
+cargo test "$@"
