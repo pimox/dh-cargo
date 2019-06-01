@@ -89,6 +89,11 @@ native_libs() {
 				srcleft="${srcstat%%=*}"
 				libfile="${srcstat#*=}"
 				if [ "$(readlink -f "$libfile")" = "$(readlink -f "$PWD")" ]; then
+					# Note that this exception only applies in the case that where you are building
+					# the Debian package for $containing_crate itself. In the case where you are
+					# building a Debian package for crate X depending on $containing_crate, the
+					# latter still has to output the dh-cargo:deb-built-using in their build.rs so
+					# that the Debian package for crate X can correctly set Built-Using themselves.
 					echo >&2 "$0: static library derived from $libfile which is the top-level crate being built, no need to add Built-Using"
 					continue
 				fi
