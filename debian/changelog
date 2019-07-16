@@ -2,6 +2,10 @@ dh-cargo (19) unstable; urgency=medium
 
   * Team upload
 
+  [ Gianfranco Costamagna ]
+  * Apply fix from Ximin Luo to use SOURCE_DATE_EPOCH for the touch command, to
+    avoid breaking reproducible builds
+
   [ Dimitri John Ledkov ]
   * Touch .cargo_vcs_info.json to update timestamp, as otherwise the file
     has unix creation time of 0 which is rejected by the archive in the
