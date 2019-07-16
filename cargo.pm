@@ -175,6 +175,7 @@ sub install {
 
 sub clean {
     my $this=shift;
+    doit("touch", "--no-create", ".cargo_vcs_info.json");
     doit("/usr/share/cargo/bin/cargo", "clean", @_);
     doit("rm", "-rf", $this->get_sourcepath(".cargo-checksum.json"));
     doit("rm", "-rf", "debian/cargo_registry");

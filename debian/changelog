@@ -1,3 +1,14 @@
+dh-cargo (19) unstable; urgency=medium
+
+  * Team upload
+
+  [ Dimitri John Ledkov ]
+  * Touch .cargo_vcs_info.json to update timestamp, as otherwise the file
+    has unix creation time of 0 which is rejected by the archive in the
+    .deb.s (Closes: #932172)
+
+ -- Sylvestre Ledru <sylvestre@debian.org>  Tue, 16 Jul 2019 10:39:05 +0200
+
 dh-cargo (18) unstable; urgency=medium
 
   * Add cargo-auto-test to prepare for running autopkgtests.
