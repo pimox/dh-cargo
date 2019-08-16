@@ -1,6 +1,7 @@
 dh-cargo (20) UNRELEASED; urgency=medium
 
   * Remove Cargo.lock since this prevents us from upgrading stuff.
+  * Add the version of rustc to *Built-Using d/control fields.
 
  -- Ximin Luo <infinity0@debian.org>  Thu, 15 Aug 2019 18:01:15 -0700
 

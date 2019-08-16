@@ -31,17 +31,24 @@ pkg_has_srcleft_license() {
 	fi
 }
 
-rust_libs() {
-	cat "$CARGO_TARGET_DIR/deps"/*.d \
-	| sed -nre 's	^\S*/('"$CARGO_REGISTRY"'/[^/]*)/.*	'"$(readlink -f "$PWD")/"'\1	gp' \
-	| sort -u \
-	| xargs -r readlink -f \
-	| xargs -r dpkg -S \
+dep_files_to_pkgs() {
+	xargs -r dpkg -S \
 	| sed -nre 's	(.*): .*	\1	gp' \
 	| xargs -r dpkg-query --show \
 	| while read pkg ver; do echo "$pkg $ver $(pkg_has_srcleft_license "${pkg%:*}" "$ver")"; done
 	# pkg_has_srcleft_license should be accurate for all rust crates, no need to give a $containing_crate
 	# this is due to nature of crate copyright info, and the debian rust packaging policy
+}
+
+rust_dep_files() {
+	cat "$CARGO_TARGET_DIR/deps"/*.d \
+	| sed -nre 's	^\S*/('"$CARGO_REGISTRY"'/[^/]*)/.*	'"$(readlink -f "$PWD")/"'\1	gp' \
+	| sort -u \
+	| xargs -r readlink -f
+}
+
+rust_libs() {
+	{ which rustc; rust_dep_files; } | dep_files_to_pkgs
 }
 
 gcc_default_searchdirs() {
