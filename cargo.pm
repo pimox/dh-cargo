@@ -123,6 +123,7 @@ sub configure {
     my $this=shift;
     doit("cp", $this->get_sourcepath("debian/cargo-checksum.json"),
                $this->get_sourcepath(".cargo-checksum.json"));
+    doit("rm", "-f", $this->get_sourcepath("Cargo.lock"));
     doit("/usr/share/cargo/bin/cargo", "prepare-debian", "debian/cargo_registry", "--link-from-system");
 }
 
