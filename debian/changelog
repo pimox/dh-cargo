@@ -1,3 +1,10 @@
+dh-cargo (21) UNRELEASED; urgency=medium
+
+  * Use source versions (without rebuild +bX suffixes) in Built-Using.
+    (Closes: #939016)
+
+ -- Ximin Luo <infinity0@debian.org>  Thu, 05 Sep 2019 00:33:36 -0700
+
 dh-cargo (20) unstable; urgency=medium
 
   * Remove Cargo.lock since this prevents us from upgrading stuff.
