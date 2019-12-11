@@ -1,3 +1,9 @@
+dh-cargo (21~bpo10+pve1) proxmox-rust; urgency=medium
+
+  * Rebuild for buster-backports / Proxmox 6.x products
+
+ -- Proxmox Support Team <support@proxmox.com>  Wed, 11 Dec 2019 10:25:55 +0100
+
 dh-cargo (21) unstable; urgency=medium
 
   * Use source versions (without rebuild +bX suffixes) in Built-Using.
