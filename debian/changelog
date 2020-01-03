@@ -1,3 +1,9 @@
+dh-cargo (22) UNRELEASED; urgency=medium
+
+  * Drop DEB_CARGO_PACKAGE in favour of DESTDIR. (Closes: #946616)
+
+ -- Ximin Luo <infinity0@debian.org>  Fri, 03 Jan 2020 02:09:35 +0000
+
 dh-cargo (21) unstable; urgency=medium
 
   * Use source versions (without rebuild +bX suffixes) in Built-Using.
