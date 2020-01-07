@@ -1,3 +1,9 @@
+dh-cargo (22) unstable; urgency=medium
+
+  * Drop DEB_CARGO_PACKAGE in favour of DESTDIR. (Closes: #946616)
+
+ -- Ximin Luo <infinity0@debian.org>  Mon, 06 Jan 2020 21:37:09 +0000
+
 dh-cargo (21~bpo10+pve1) proxmox-rust; urgency=medium
 
   * Rebuild for buster-backports / Proxmox 6.x products
