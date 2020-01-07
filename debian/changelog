@@ -1,3 +1,9 @@
+dh-cargo (22~bpo10+pve2) proxmox-rust; urgency=medium
+
+  * Allow backported cargo to satisfy dependency
+
+ -- Proxmox Support Team <support@proxmox.com>  Tue, 7 Jan 2020 11:16:23 +0100
+
 dh-cargo (22~bpo10+pve1) proxmox-rust; urgency=medium
 
   * Rebuild for Debian Buster / Proxmox
