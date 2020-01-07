@@ -1,6 +1,8 @@
 dh-cargo (23) UNRELEASED; urgency=medium
 
   * cargo-auto-test: ignore some false positive test failures
+  * Drop support for dh_auto_test --destdir, it doesn't meet our requirements.
+    Instead, offer DESTDIR as an alternative.
 
  -- Ximin Luo <infinity0@debian.org>  Tue, 07 Jan 2020 11:13:02 +0000
 

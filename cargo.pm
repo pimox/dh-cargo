@@ -167,6 +167,7 @@ sub install {
     }
     if ($this->{binpkg}) {
         # Do the install
+        my $destdir = $ENV{'DESTDIR'} || $this->get_sourcepath("debian/" . $this->{binpkg});
         doit("env", "DESTDIR=$destdir",
              "/usr/share/cargo/bin/cargo", "install", @_);
         # generate Built-Using fields
