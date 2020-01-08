@@ -3,6 +3,9 @@
 #
 # Requires dev-dependencies to be installed. If you give extra flags such as
 # "--all-features", then these features' dependencies must also be installed.
+#
+# This script also swallows some known false-positive test failures, so you
+# don't have to set test_is_broken everywhere in your debcargo.toml configs.
 
 set -e
 
@@ -45,5 +48,38 @@ export PATH="/usr/share/cargo/bin:$PATH"
 
 # run the test!
 
+if [ -t 2 ]; then flags="--color=always"; export RUSTDOCFLAGS="--color=always"; fi
+
+run_test() {
+	local n="$1"
+	shift
+	{ cargo test $flags "$@" 2>&1; echo "$?" > "$rundir/run-$n.ec"; } | tee "$rundir/run-$n.log"
+	sed -i -e 's/\x1b\[[0-9;]*m//g' "$rundir/run-$n.log" # rm ansi colour codes
+	local x="$(< "$rundir/run-$n.ec")"
+	if [ "$x" = "0" ]; then
+		return 0
+	fi
+	local e="$(egrep -o '^error\[E[0-9]+\]' "$rundir/run-$n.log" | sort -u | tr '\n' ',')"
+	# some crates like to update their old versions to depend on their new
+	# versions, e.g. rand-core. unfortunately this breaks cargo test, see
+	# https://github.com/rust-lang/cargo/issues/6819. so just ignore them.
+	if [ "$e" = "error[E0463],error[E0465]," ]; then
+		echo "cargo-auto-test: ignore test failure due to upstream #6819: $e"
+		return 0
+	fi
+	return "$x"
+}
+
+set +e
+
 cargo prepare-debian "$rundir/registry" --link-from-system
-cargo test "$@"
+
+run_test 0 "$@"
+x="$?"
+if [ "$x" = "0" ]; then exit 0; fi
+if ! egrep -q '^error\[E0554\]' "$rundir/run-0.log"; then exit "$x"; fi
+
+echo
+echo "----------------------------------------------------------------"
+echo "cargo-auto-test: re-running test with RUSTC_BOOTSTRAP due to E0554"
+RUSTC_BOOTSTRAP=1 run_test 1 "$@"

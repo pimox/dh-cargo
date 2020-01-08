@@ -1,3 +1,11 @@
+dh-cargo (23) unstable; urgency=medium
+
+  * cargo-auto-test: ignore some false positive test failures
+  * Drop support for dh_auto_test --destdir, it doesn't meet our requirements.
+    Instead, offer DESTDIR as an alternative.
+
+ -- Ximin Luo <infinity0@debian.org>  Tue, 07 Jan 2020 21:33:41 +0000
+
 dh-cargo (22~bpo10+pve2) proxmox-rust; urgency=medium
 
   * Allow backported cargo to satisfy dependency
