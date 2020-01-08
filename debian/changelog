@@ -1,3 +1,9 @@
+dh-cargo (23~bpo10+pve1) proxmox-rust; urgency=medium
+
+  * Rebuild for Debian Buster / Proxmox
+
+ -- Proxmox Support Team <support@proxmox.com>  Wed, 8 Jan 2020 07:16:57 +0100
+
 dh-cargo (23) unstable; urgency=medium
 
   * cargo-auto-test: ignore some false positive test failures
