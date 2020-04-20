@@ -1,3 +1,10 @@
+dh-cargo (24) UNRELEASED; urgency=medium
+
+  * Install pre-release versions in the right place so autopkgtest finds them.
+  * Add some brief documentation for cargo.pm
+
+ -- Ximin Luo <infinity0@debian.org>  Mon, 20 Apr 2020 21:24:38 +0100
+
 dh-cargo (23) unstable; urgency=medium
 
   * cargo-auto-test: ignore some false positive test failures

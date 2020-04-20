@@ -1,5 +1,20 @@
 # debhelper buildsystem for Rust crates using Cargo
 #
+# This builds Debian rust crates to be installed into a system-level
+# crate registry in /usr/share/cargo/registry containing crates that
+# can be used and Build-Depended upon by other Debian packages. The
+# debcargo(1) tool will automatically generate Debian source packages
+# that uses this buildsystem and packagers are not expected to use this
+# directly which is why the documentation is poor.
+#
+# If you have a multi-language program such as firefox or librsvg that
+# includes private Rust crates or libraries not exposed to others, you
+# should instead use our cargo wrapper, in /usr/share/cargo/bin/cargo,
+# which this script also uses. That file contains usage instructions.
+# You then should define a Build-Depends on cargo and not dh-cargo.
+# The Debian cargo package itself also uses the wrapper as part of its
+# own build, which you can look at for a real usage example.
+#
 # Josh Triplett <josh@joshtriplett.org>
 # Ximin Luo <infinity0@debian.org>
 
@@ -149,7 +164,7 @@ sub test {
 sub install {
     my $this=shift;
     my $destdir=shift;
-    my $crate = $this->{crate} . '-' . $this->{version};
+    my $crate = $this->{crate} . '-' . ($this->{version} =~ tr/~/-/r);
     if ($this->{libpkg}) {
         my $target = $this->get_sourcepath("debian/" . $this->{libpkg} . "/usr/share/cargo/registry/$crate");
         my @sources = $this->get_sources();
