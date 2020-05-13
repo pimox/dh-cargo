@@ -1,3 +1,10 @@
+dh-cargo (24) unstable; urgency=medium
+
+  * Install pre-release versions in the right place so autopkgtest finds them.
+  * Add some brief documentation for cargo.pm
+
+ -- Ximin Luo <infinity0@debian.org>  Mon, 20 Apr 2020 21:30:03 +0100
+
 dh-cargo (23~bpo10+pve1) proxmox-rust; urgency=medium
 
   * Rebuild for Debian Buster / Proxmox
